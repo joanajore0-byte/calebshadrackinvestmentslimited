@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caleb Investment Ltd · CIL</title>
+  <!-- Font Awesome (for icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #0b1a33 0%, #1a3a5c 100%);
+      min-height: 100vh;
+      color: #f0f9ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    /* main card */
+    .app-container {
+      max-width: 1300px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border-radius: 2.5rem;
+      padding: 1.8rem 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+    }
+
+    /* ----- super secure splash (1s) ----- */
+    #splash {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at center, #0d2847, #030d1a);
+      z-index: 9999;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    #splash h1 {
+      font-size: 5rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      background: linear-gradient(45deg, #f9e05d, #ff8a5c, #d66ef7, #4fc3ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px rgba(255, 200, 100, 0.4);
+      animation: pulseGlow 0.8s infinite alternate;
+    }
+    @keyframes pulseGlow {
+      0% { filter: drop-shadow(0 0 5px #f9e05d); }
+      100% { filter: drop-shadow(0 0 25px #d66ef7); }
+    }
+
+    /* header / branding */
+    .cil-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 0.8rem;
+    }
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+    .brand h2 {
+      font-weight: 700;
+      font-size: 2rem;
+      color: white;
+      letter-spacing: -0.5px;
+    }
+    .brand span {
+      background: #2a5f8a;
+      padding: 0.2rem 0.9rem;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #b8dcff;
+      border: 1px solid #3d7bb3;
+    }
+    .cil-badge {
+      background: #1f4b73;
+      padding: 0.3rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      border: 1px solid #4f8fc7;
+      color: #d4ecff;
+    }
+
+    /* navigation side (hamburger) */
+    .nav-toggle {
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: white;
+      background: rgba(255,255,255,0.05);
+      padding: 0.2rem 0.9rem;
+      border-radius: 40px;
+      transition: 0.2s;
+      border: 1px solid #3f7fb0;
+    }
+    .nav-toggle:hover {
+      background: #1e4d78;
+    }
+
+    /* side drawer */
+    .side-drawer {
+      position: fixed;
+      top: 0;
+      right: -380px;
+      width: 340px;
+      height: 100%;
+      background: #0b1f33;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-left: 1px solid #3a6d99;
+      box-shadow: -10px 0 30px rgba(0,0,0,0.7);
+      transition: right 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+      padding: 2rem 1.5rem;
+      z-index: 999;
+      color: #e6f3ff;
+      overflow-y: auto;
+    }
+    .side-drawer.open {
+      right: 0;
+    }
+    .drawer-close {
+      position: absolute;
+      top: 1.2rem;
+      right: 1.5rem;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #aac8e8;
+    }
+    .drawer-title {
+      font-size: 1.6rem;
+      border-bottom: 1px solid #346a96;
+      padding-bottom: 0.8rem;
+      margin-top: 1rem;
+      margin-bottom: 1.8rem;
+    }
+    .drawer-field {
+      background: rgba(255,255,255,0.03);
+      padding: 0.8rem 1rem;
+      border-radius: 16px;
+      margin-bottom: 1rem;
+      border-left: 4px solid #4f9bda;
+    }
+    .drawer-field strong {
+      display: inline-block;
+      width: 100px;
+      color: #9fc9f0;
+    }
+    .drawer-field .value {
+      color: white;
+      font-weight: 500;
+    }
+    .btn-logout {
+      background: #b13e3e;
+      border: none;
+      color: white;
+      padding: 0.6rem 1.8rem;
+      border-radius: 40px;
+      margin-top: 1.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .btn-logout:hover { background: #cf4f4f; }
+
+    /* welcome & plans */
+    .welcome-block {
+      background: linear-gradient(135deg, #0f3252, #1a4b72);
+      padding: 1.5rem 2rem;
+      border-radius: 40px;
+      margin: 1.2rem 0 1.8rem 0;
+      border: 1px solid #3a7bb0;
+      box-shadow: inset 0 0 20px rgba(0, 30, 60, 0.5);
+    }
+    .welcome-block h3 {
+      font-size: 1.9rem;
+      font-weight: 600;
+      color: #f9f3d9;
+    }
+    .welcome-block h3 i {
+      color: #fdd663;
+      margin-right: 10px;
+    }
+    .highlight-500 {
+      background: #f7b731;
+      padding: 0.1rem 0.8rem;
+      border-radius: 30px;
+      color: #0a1e2f;
+      font-weight: 700;
+    }
+
+    /* plan cards */
+    .plan-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+      margin: 2rem 0 1.5rem;
+    }
+    .plan-card {
+      background: rgba(10, 30, 50, 0.7);
+      backdrop-filter: blur(4px);
+      border: 1px solid #3473a3;
+      border-radius: 32px;
+      padding: 1.5rem 1.8rem;
+      flex: 1 1 180px;
+      min-width: 160px;
+      text-align: center;
+      transition: 0.2s;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+    }
+    .plan-card:hover {
+      transform: scale(1.02);
+      border-color: #7bb9f0;
+      background: #123a5a;
+    }
+    .plan-card .plan-name {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #b3d9ff;
+    }
+    .plan-card .min-cap {
+      background: #1e4b6e;
+      padding: 0.2rem 0.6rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+    }
+
+    /* tables */
+    .table-wrap {
+      background: rgba(0, 15, 30, 0.5);
+      border-radius: 28px;
+      padding: 0.5rem 0.2rem 0.2rem 0.2rem;
+      margin: 1.8rem 0;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      color: #e3f0fc;
+      font-size: 0.9rem;
+    }
+    th {
+      background: #1f4d72;
+      color: white;
+      padding: 0.9rem 0.3rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+    td {
+      padding: 0.7rem 0.3rem;
+      border-bottom: 1px solid #2a5c81;
+      text-align: center;
+    }
+    tr:last-child td { border-bottom: none; }
+    .badge-plan {
+      background: #1d5d88;
+      padding: 0.1rem 0.9rem;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* calculator */
+    .calc-box {
+      background: #0d2842;
+      border-radius: 30px;
+      padding: 1.5rem 2rem;
+      margin: 1.8rem 0;
+      border: 1px solid #2f6b97;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .calc-box label {
+      font-weight: 500;
+      color: #bbd9f5;
+    }
+    .calc-box input {
+      background: #052135;
+      border: 1px solid #3f7fb0;
+      padding: 0.5rem 1rem;
+      border-radius: 40px;
+      color: white;
+      font-size: 1rem;
+      width: 160px;
+    }
+    .calc-box input:focus {
+      outline: 2px solid #6aa9e6;
+    }
+    .calc-result {
+      background: #0a213a;
+      padding: 0.5rem 1.8rem;
+      border-radius: 60px;
+      border-left: 4px solid #f3b44a;
+    }
+
+    /* step & contact */
+    .step-procedure {
+      background: #0b233b;
+      border-radius: 28px;
+      padding: 1.5rem 2rem;
+      margin: 1.5rem 0;
+      border: 1px solid #3e76a3;
+    }
+    .step-procedure ol {
+      margin-left: 1.2rem;
+      color: #c7def5;
+    }
+    .step-procedure li {
+      margin: 0.4rem 0;
+    }
+    .contact-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      background: #0f2a44;
+      border-radius: 40px;
+      padding: 0.8rem 2rem;
+      justify-content: center;
+      border: 1px solid #3b74a2;
+      margin-top: 1.2rem;
+    }
+
+    /* documents */
+    .doc-links {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin: 0.8rem 0;
+    }
+    .doc-links a {
+      color: #9ac7f5;
+      text-decoration: none;
+      border-bottom: 1px dashed #4f8fc7;
+      padding-bottom: 2px;
+    }
+    .doc-links a:hover { color: white; }
+
+    /* misc */
+    .footer-note {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #8db3d4;
+      margin-top: 2rem;
+      border-top: 1px solid #1e4a6b;
+      padding-top: 1.2rem;
+    }
+    .btn-invest {
+      background: #2b7ab3;
+      border: none;
+      padding: 0.3rem 1.4rem;
+      border-radius: 50px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-invest:hover { background: #3e95d4; }
+
+    /* responsive */
+    @media (max-width: 600px) {
+      .app-container { padding: 1rem; }
+      .plan-grid { gap: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- SPLASH "super secure" 1s -->
+  <div id="splash"><h1>🔐 SUPER SECURE</h1></div>
+
+  <div class="app-container">
+    <!-- header -->
+    <div class="cil-header">
+      <div class="brand">
+        <h2>Caleb Investment</h2>
+        <span>CIL</span>
+        <span style="background: #1f5f8a; margin-left: 6px;">🇺🇬</span>
+      </div>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <span class="cil-badge"><i class="fas fa-university"></i> Bank of Uganda</span>
+        <div class="nav-toggle" id="navToggle"><i class="fas fa-bars"></i></div>
+      </div>
+    </div>
+
+    <!-- welcome -->
+    <div class="welcome-block">
+      <h3><i class="fas fa-hand-holding-usd"></i> Welcome! Earn up to <span class="highlight-500">500% interest</span> for loyal investors</h3>
+      <p style="color: #c1defa; margin-top: 8px;"><i class="fas fa-map-pin"></i> Kampala, Najjera · Regulated by Bank of Uganda</p>
+    </div>
+
+    <!-- plan cards -->
+    <div class="plan-grid">
+      <div class="plan-card"><div class="plan-name">Basic</div><div class="min-cap">UGX 1,000</div><div>weekly</div><button class="btn-invest" data-plan="basic">choose</button></div>
+      <div class="plan-card"><div class="plan-name">Smart</div><div class="min-cap">UGX 100,000</div><div>weekly / monthly</div><button class="btn-invest" data-plan="smart">choose</button></div>
+      <div class="plan-card"><div class="plan-name">VIP · Triple Gains</div><div class="min-cap">UGX 300,000</div><div>3 months</div><button class="btn-invest" data-plan="vip">choose</button></div>
+    </div>
+
+    <!-- investment tables (specific amounts) -->
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Plan</th><th>Capital (UGX)</th><th>Interest</th><th>Weekly/Monthly</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge-plan">Basic</span></td><td>1,000</td><td>20% weekly</td><td>Weekly</td></tr>
+          <tr><td><span class="badge-plan">Basic</span></td><td>50,000</td><td>25% weekly</td><td>Weekly</td></tr>
+          <tr><td><span class="badge-plan">Smart</span></td><td>100,000</td><td>15% monthly</td><td>Monthly</td></tr>
+          <tr><td><span class="badge-plan">Smart</span></td><td>500,000</td><td>22% monthly</td><td>Monthly</td></tr>
+          <tr><td><span class="badge-plan">Smart</span></td><td>1,000,000</td><td>30% weekly</td><td>Weekly</td></tr>
+          <tr><td><span class="badge-plan">VIP</span></td><td>300,000</td><td>200% (3x)</td><td>3 months</td></tr>
+          <tr><td><span class="badge-plan">VIP</span></td><td>2,500,000</td><td>200% (3x)</td><td>3 months</td></tr>
+          <tr><td><span class="badge-plan">VIP</span></td><td>9,000,000</td><td>200% (3x)</td><td>3 months</td></tr>
+        </tbody>
+      </table>
+      <div style="padding: 0.5rem 1rem; color: #aac7e8; font-size: 0.8rem;">* Maximum capital: UGX 9,000,000 · more invest = more earn</div>
+    </div>
+
+    <!-- calculator -->
+    <div class="calc-box" id="calcBox">
+      <label><i class="fas fa-calculator"></i> Invest (UGX):</label>
+      <input type="number" id="investInput" value="1000" min="1000" step="500">
+      <span style="color: #b3d9ff;">→</span>
+      <div class="calc-result" id="calcResult">Earnings: UGX 1,200</div>
+      <div style="font-size: 0.9rem; color: #9bc2e6;"><i class="fas fa-phone"></i> send to 0761416226</div>
+    </div>
+
+    <!-- step by step -->
+    <div class="step-procedure">
+      <h4><i class="fas fa-list-ol"></i> How to invest (exact amount)</h4>
+      <ol>
+        <li>Choose your plan and enter the exact capital in the calculator above.</li>
+        <li>Send <strong>the exact capital amount</strong> to <strong>0761416226</strong> (Mobile Money).</li>
+        <li>After payment, sign up / log in and your investment will be tracked.</li>
+        <li>Earnings will be credited based on your plan (weekly/monthly/3-months).</li>
+      </ol>
+    </div>
+
+    <!-- contact & docs -->
+    <div class="contact-row">
+      <span><i class="fas fa-phone-alt"></i> 0703959773</span>
+      <span><i class="fas fa-phone-alt"></i> 0761416226</span>
+      <span><i class="fas fa-envelope"></i> calebshadrack911@gmail.com</span>
+    </div>
+    <div class="doc-links">
+      <a href="#"><i class="fas fa-file-pdf"></i> Prospectus (PDF)</a>
+      <a href="#"><i class="fas fa-file-alt"></i> Terms & Conditions</a>
+      <a href="#"><i class="fas fa-shield-alt"></i> Bank of Uganda license</a>
+    </div>
+    <div class="footer-note">Caleb Investment Ltd · CIL · Regulated · Najjera, Kampala</div>
+  </div>
+
+  <!-- SIDE DRAWER (account) -->
+  <div class="side-drawer" id="sideDrawer">
+    <div class="drawer-close" id="drawerClose"><i class="fas fa-times"></i></div>
+    <div class="drawer-title"><i class="fas fa-user-circle"></i> My Account</div>
+    <div id="accountContent">
+      <!-- dynamic content from js -->
+      <div class="drawer-field"><strong>Name</strong><span class="value" id="dName">—</span></div>
+      <div class="drawer-field"><strong>Plan</strong><span class="value" id="dPlan">—</span></div>
+      <div class="drawer-field"><strong>Invested</strong><span class="value" id="dInvested">UGX 0</span></div>
+      <div class="drawer-field"><strong>Capital</strong><span class="value" id="dCapital">UGX 0</span></div>
+      <div class="drawer-field"><strong>Total earnings</strong><span class="value" id="dEarnings">UGX 0</span></div>
+      <div class="drawer-field"><strong>Time remaining</strong><span class="value" id="dTime">—</span></div>
+      <!-- signup/login form -->
+      <div style="margin-top: 1.8rem; background: #0c2843; padding: 1rem; border-radius: 28px;">
+        <p style="font-weight: 600;">Sign up / Log in</p>
+        <input id="signName" placeholder="Name" style="width:100%; margin:4px 0; padding:6px 10px; border-radius: 30px; border:1px solid #3b7aa8; background: #052135; color:white;">
+        <input id="signPhone" placeholder="Phone" style="width:100%; margin:4px 0; padding:6px 10px; border-radius: 30px; border:1px solid #3b7aa8; background: #052135; color:white;">
+        <input id="signEmail" placeholder="Email" style="width:100%; margin:4px 0; padding:6px 10px; border-radius: 30px; border:1px solid #3b7aa8; background: #052135; color:white;">
+        <input id="signCountry" placeholder="Country" style="width:100%; margin:4px 0; padding:6px 10px; border-radius: 30px; border:1px solid #3b7aa8; background: #052135; color:white;">
+        <button id="signBtn" style="background: #1f70aa; border: none; color:white; padding:8px 20px; border-radius:40px; margin-top:10px; font-weight:600; cursor:pointer;">Sign up / Update</button>
+        <button id="logoutBtn" class="btn-logout" style="width:100%; margin-top:8px;">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // splash
+      setTimeout(() => {
+        const splash = document.getElementById('splash');
+        if (splash) splash.style.opacity = '0';
+        setTimeout(() => { if (splash) splash.style.display = 'none'; }, 300);
+      }, 1000);
+
+      // DOM refs
+      const drawer = document.getElementById('sideDrawer');
+      const navToggle = document.getElementById('navToggle');
+      const drawerClose = document.getElementById('drawerClose');
+      const investInput = document.getElementById('investInput');
+      const calcResult = document.getElementById('calcResult');
+
+      // user state
+      let user = {
+        name: '', phone: '', email: '', country: '',
+        plan: 'basic',
+        capital: 1000,
+        invested: 1000,
+        earnings: 0,
+        startDate: new Date(),
+        maturityDate: new Date(Date.now() + 7*24*60*60*1000) // 1 week default
+      };
+
+      // update calculator & earnings
+      function updateCalculator() {
+        let capital = parseFloat(investInput.value) || 1000;
+        if (capital < 1000) capital = 1000;
+        if (capital > 9000000) capital = 9000000;
+        investInput.value = capital;
+        user.capital = capital;
+        // determine plan based on capital (just for display)
+        let plan = 'basic';
+        let rate = 0.2; // weekly
+        let period = 'weekly';
+        let multiplier = 1;
+        if (capital >= 300000) { plan = 'vip'; rate = 2.0; period = '3 months'; multiplier = 3; }
+        else if (capital >= 100000) { plan = 'smart'; rate = 0.15; period = 'monthly'; }
+        else { plan = 'basic'; rate = 0.2; period = 'weekly'; }
+        // earnings calculation (simplified)
+        let earnings = 0;
+        if (plan === 'basic') earnings = capital * rate;
+        else if (plan === 'smart') earnings = capital * rate;
+        else if (plan === 'vip') earnings = capital * 2; // triple gains (3x)
+        user.plan = plan;
+        user.earnings = earnings;
+        calcResult.innerHTML = `Earnings: UGX ${(capital + earnings).toLocaleString()}`;
+        // update drawer if open
+        if (drawer.classList.contains('open')) updateDrawer();
+      }
+
+      // update drawer with user details
+      function updateDrawer() {
+        document.getElementById('dName').innerText = user.name || '—';
+        document.getElementById('dPlan').innerText = user.plan ? user.plan.toUpperCase() : '—';
+        document.getElementById('dInvested').innerText = `UGX ${user.invested.toLocaleString()}`;
+        document.getElementById('dCapital').innerText = `UGX ${user.capital.toLocaleString()}`;
+        let total = user.capital + user.earnings;
+        document.getElementById('dEarnings').innerText = `UGX ${total.toLocaleString()}`;
+        // time remaining (mock)
+        let now = new Date();
+        let diff = user.maturityDate - now;
+        if (diff < 0) diff = 0;
+        let days = Math.floor(diff / (1000*60*60*24));
+        let hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+        document.getElementById('dTime').innerText = `${days}d ${hours}h`;
+      }
+
+      // signup / update
+      document.getElementById('signBtn').addEventListener('click', function() {
+        const name = document.getElementById('signName').value.trim();
+        const phone = document.getElementById('signPhone').value.trim();
+        const email = document.getElementById('signEmail').value.trim();
+        const country = document.getElementById('signCountry').value.trim();
+        if (name) user.name = name;
+        if (phone) user.phone = phone;
+        if (email) user.email = email;
+        if (country) user.country = country;
+        // set invested = capital
+        user.invested = user.capital;
+        // maturity date based on plan
+        let days = 7;
+        if (user.plan === 'smart') days = 30;
+        else if (user.plan === 'vip') days = 90;
+        user.maturityDate = new Date(Date.now() + days*24*60*60*1000);
+        updateDrawer();
+        alert('Account updated!');
+      });
+
+      // logout
+      document.getElementById('logoutBtn').addEventListener('click', function() {
+        user = { name: '', phone: '', email: '', country: '', plan: 'basic', capital: 1000, invested: 1000, earnings: 0, startDate: new Date(), maturityDate: new Date(Date.now() + 7*24*60*60*1000) };
+        document.getElementById('signName').value = '';
+        document.getElementById('signPhone').value = '';
+        document.getElementById('signEmail').value = '';
+        document.getElementById('signCountry').value = '';
+        updateDrawer();
+        updateCalculator();
+        alert('Logged out.');
+      });
+
+      // plan chooser buttons
+      document.querySelectorAll('.btn-invest').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const plan = this.dataset.plan;
+          let capital = 1000;
+          if (plan === 'smart') capital = 100000;
+          else if (plan === 'vip') capital = 300000;
+          investInput.value = capital;
+          user.plan = plan;
+          user.capital = capital;
+          user.invested = capital;
+          updateCalculator();
+          // open drawer
+          drawer.classList.add('open');
+          updateDrawer();
+        });
+      });
+
+      // calculator input
+      investInput.addEventListener('input', function() {
+        let val = parseFloat(this.value) || 1000;
+        if (val < 1000) val = 1000;
+        if (val > 9000000) val = 9000000;
+        this.value = val;
+        user.capital = val;
+        user.invested = val;
+        updateCalculator();
+      });
+
+      // toggle drawer
+      navToggle.addEventListener('click', function() {
+        drawer.classList.toggle('open');
+        if (drawer.classList.contains('open')) updateDrawer();
+      });
+      drawerClose.addEventListener('click', function() { drawer.classList.remove('open'); });
+
+      // init
+      updateCalculator();
+      // set default signup fields example
+      document.getElementById('signName').value = 'Caleb';
+      document.getElementById('signPhone').value = '0761416226';
+      document.getElementById('signEmail').value = 'calebshadrack911@gmail.com';
+      document.getElementById('signCountry').value = 'Uganda';
+      user.name = 'Caleb';
+      user.phone = '0761416226';
+      user.email = 'calebshadrack911@gmail.com';
+      user.country = 'Uganda';
+      user.invested = 1000;
+      user.plan = 'basic';
+      user.maturityDate = new Date(Date.now() + 7*24*60*60*1000);
+      updateDrawer();
+
+      // extra: click outside close
+      document.addEventListener('click', function(e) {
+        if (drawer.classList.contains('open') && !drawer.contains(e.target) && e.target.id !== 'navToggle') {
+          drawer.classList.remove('open');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
